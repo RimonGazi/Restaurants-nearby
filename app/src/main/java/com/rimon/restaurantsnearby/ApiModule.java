@@ -14,12 +14,12 @@ import retrofit2.converter.moshi.MoshiConverterFactory;
 
 @Module
 public class ApiModule {
-    private final HttpUrl PRODUCTION_API_URL = HttpUrl.parse("url/");
+    private final HttpUrl API_URL = HttpUrl.parse("https://api.foursquare.com/v2/");
 
     @Provides
     @RestaurantScope
     HttpUrl provideBaseUrl() {
-        return PRODUCTION_API_URL;
+        return API_URL;
     }
 
     @Provides
