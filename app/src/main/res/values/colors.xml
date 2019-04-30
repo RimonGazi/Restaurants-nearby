@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="windowBackground">@android:color/white</color>
+    <color name="indigo">#4768fd</color>
+    <color name="status_bar">#3c54fe</color>
+    <color name="indigo_dark">#3c54fe</color>
+</resources>
