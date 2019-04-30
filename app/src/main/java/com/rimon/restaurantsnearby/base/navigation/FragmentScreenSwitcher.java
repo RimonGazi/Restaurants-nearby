@@ -40,6 +40,10 @@ public class FragmentScreenSwitcher implements ScreenSwitcher<FragmentScreen>,
         return mFragments != null && !mFragments.isEmpty();
     }
 
+    public List<Fragment> getFragments() {
+        return mFragmentManager.getFragments();
+    }
+
     @Override
     public void open(final FragmentScreen mScreen) {
         mResultFragmentTag = mScreen.getName();
@@ -66,10 +70,13 @@ public class FragmentScreenSwitcher implements ScreenSwitcher<FragmentScreen>,
         }
         mResultFragmentTag = mFragmentScreen.getName();
         replace(mFragmentScreen);
-        final BaseFragment mNewFragment = (BaseFragment) mFragmentScreen.getFragment();
-        if (mNewFragment != null) {
-            mNewFragment.setAfterClearStack(true);
-            //after replace don`t called "onBackStackChanged()", consequently, don`t called "onShow();
+        final Fragment mNewFragment = mFragmentScreen.getFragment();
+        if (mNewFragment instanceof BaseFragment) {
+            BaseFragment mBaseFragment = (BaseFragment) mNewFragment;
+            if (mNewFragment != null) {
+                mBaseFragment.setAfterClearStack(true);
+                //after replace don`t called "onBackStackChanged()", consequently, don`t called "onShow();
+            }
         }
     }
 
@@ -136,10 +143,15 @@ public class FragmentScreenSwitcher implements ScreenSwitcher<FragmentScreen>,
             mCurrentFragmentTag = mFragmentManager
                     .getBackStackEntryAt(mBackStackEntryCount - 1).getName();
         }
-        final BaseFragment mCurrentFragment = (BaseFragment) mFragmentManager
+
+        final Fragment mNewFragment = mFragmentManager
                 .findFragmentByTag(mCurrentFragmentTag);
-        if (mCurrentFragment != null) {
-            mCurrentFragment.onShow();
+        if (mNewFragment instanceof BaseFragment) {
+            BaseFragment mBaseFragment = (BaseFragment) mNewFragment;
+            final BaseFragment mCurrentFragment = (BaseFragment) mBaseFragment;
+            if (mCurrentFragment != null) {
+                mCurrentFragment.onShow();
+            }
         }
     }
 
