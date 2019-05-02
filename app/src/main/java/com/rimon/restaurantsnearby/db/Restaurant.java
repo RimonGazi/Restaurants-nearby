@@ -10,5 +10,5 @@ public class Restaurant {
     public String name;
     public double lat;
     public double lng;
-    public String iconUlr;
+    public String iconUrl;
 }

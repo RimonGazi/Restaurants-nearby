@@ -83,7 +83,7 @@ public class RestaurantRepository {
                     if (categories != null && categories.size() > 0) {
                         final Category category = categories.get(0);
                         mRestaurant.name = category.getName();
-                        mRestaurant.iconUlr = category.getIcon().getPrefix() + category.getIcon().getSuffix();
+                        mRestaurant.iconUrl = category.getIcon().getPrefix() + category.getIcon().getSuffix();
                     } else {
                         mRestaurant.name = venue.getName();
                     }

@@ -38,6 +38,7 @@ ext {
     //Architecture Components
     lifecycleVersion = '2.0.0-beta01'
     LIFECYCLE_EXTENSION = "android.arch.lifecycle:extensions:$lifecycleVersion"
+    CORE_TESTING = "androidx.arch.core:core-testing:$lifecycleVersion"
 
     truthVersion = '0.40'
     TRUTH = "com.google.truth:truth:$truthVersion"
@@ -163,10 +164,12 @@ subprojects {
         androidTestImplementation INSTRUMENT_TESTS.expresspContrib
         androidTestImplementation INSTRUMENT_TESTS.runner
         androidTestImplementation INSTRUMENT_TESTS.RULE
+        androidTestImplementation CORE_TESTING
 
         testImplementation UNIT_TEST.junit
         testImplementation UNIT_TEST.mockito
         testImplementation UNIT_TEST.hamcrest
+        testImplementation CORE_TESTING
     }
 
     def keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -213,6 +216,7 @@ subprojects {
             versionName "1.0"
             applicationId "com.rimon.restaurantsnearby"
             vectorDrawables.useSupportLibrary = true
+            testInstrumentationRunner "com.rimon.restaurantsnearby.RestaurantInstrumentedTest"
 
             buildTypes {
                 debug {
