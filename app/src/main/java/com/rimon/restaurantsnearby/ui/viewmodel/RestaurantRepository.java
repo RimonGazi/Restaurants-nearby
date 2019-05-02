@@ -17,14 +17,17 @@ import com.rimon.restaurantsnearby.network.ApiResponse;
 import com.rimon.restaurantsnearby.network.ApiService;
 import com.rimon.restaurantsnearby.network.NetworkBoundResource;
 import com.rimon.restaurantsnearby.network.Resource;
+import com.rimon.restaurantsnearby.utils.RateLimiter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class RestaurantRepository {
     private final ApiService mApiService;
     private final AppExecutors mAppExecutors;
     private final RestaurantDao mRestaurantDao;
+    private RateLimiter<String> mRateLimiter;
 
     public RestaurantRepository(ApiService mApiService,
                                 AppExecutors mAppExecutors,
@@ -32,6 +35,7 @@ public class RestaurantRepository {
         this.mApiService = mApiService;
         this.mAppExecutors = mAppExecutors;
         this.mRestaurantDao = mRestaurantDao;
+        mRateLimiter = new RateLimiter<>(10, TimeUnit.MINUTES);
     }
 
     public LiveData<Resource<List<Restaurant>>> loadData() {
@@ -43,7 +47,8 @@ public class RestaurantRepository {
 
             @Override
             protected boolean shouldFetch(@Nullable List<Restaurant> data) {
-                return true;
+                return data == null || data.isEmpty()
+                        || mRateLimiter.shouldFetch(Restaurant.class.toString());
             }
 
             @NonNull
