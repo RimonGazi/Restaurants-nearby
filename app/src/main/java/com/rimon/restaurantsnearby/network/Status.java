@@ -1,7 +1,7 @@
 package com.rimon.restaurantsnearby.network;
 
 public enum Status {
-    RUNNING,
+    LOADING,
     SUCCESS,
-    FAILED
+    ERROR
 }

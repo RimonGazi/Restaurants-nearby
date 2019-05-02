@@ -70,6 +70,13 @@ ext {
             annotationProcessor: "com.github.bumptech.glide:compiler:$glideVersion"
     ]
 
+    //Database
+    roomVersion = "2.1.0-alpha07"
+    ROOM = [
+            runtime            : "androidx.room:room-runtime:$roomVersion",
+            annotationProcessor: "androidx.room:room-compiler:$roomVersion"
+    ]
+
     // Leak Canary
     leakCanaryVersion = '1.6.1'
     LEAK_CANNARY_DEBUG = "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"
@@ -137,7 +144,13 @@ subprojects {
         api PROJECT_DEPENDENCIES
         compileOnly TRUTH
         api DEPENDENCY_INJECTION.dagger
+        annotationProcessor DEPENDENCY_INJECTION.annotationProcessor
+
+        api ROOM.runtime
+        annotationProcessor ROOM.annotationProcessor
+
         api GLIDE.glide
+        annotationProcessor GLIDE.annotationProcessor
 
         debugApi LEAK_CANNARY.debug
         releaseApi LEAK_CANNARY.release
@@ -150,10 +163,6 @@ subprojects {
         testImplementation UNIT_TEST.junit
         testImplementation UNIT_TEST.mockito
         testImplementation UNIT_TEST.hamcrest
-
-        annotationProcessor DEPENDENCY_INJECTION.annotationProcessor
-        annotationProcessor GLIDE.annotationProcessor
-        implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     }
 
     def keystorePropertiesFile = rootProject.file("keystore.properties")

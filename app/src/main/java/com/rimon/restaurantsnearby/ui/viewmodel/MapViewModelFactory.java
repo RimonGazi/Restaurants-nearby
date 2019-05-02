@@ -4,18 +4,16 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.rimon.restaurantsnearby.network.ApiService;
-
 public class MapViewModelFactory implements ViewModelProvider.Factory {
-    private final ApiService mApiService;
+    private final RestaurantRepository mRepository;
 
-    public MapViewModelFactory(final ApiService mApiService) {
-        this.mApiService = mApiService;
+    public MapViewModelFactory(RestaurantRepository mRepository) {
+        this.mRepository = mRepository;
     }
 
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new MapViewModel(mApiService);
+        return (T) new MapViewModel(mRepository);
     }
 }

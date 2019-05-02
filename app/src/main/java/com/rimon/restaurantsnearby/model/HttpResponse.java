@@ -1,4 +1,3 @@
-
 package com.rimon.restaurantsnearby.model;
 
 import com.squareup.moshi.Json;
@@ -24,5 +23,4 @@ public class HttpResponse {
     public void setResponse(Response response) {
         this.response = response;
     }
-
 }

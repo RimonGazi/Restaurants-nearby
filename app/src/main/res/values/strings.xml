@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">RestaurantsNearby</string>
     <string name="toolbar_null_pointer_exception">This Activity has no toolbar. See haveToolbar() and resToolbarId()</string>
-
+    <string name="marker_description">Latitude : %f \nLongitude : %f</string>
 </resources>

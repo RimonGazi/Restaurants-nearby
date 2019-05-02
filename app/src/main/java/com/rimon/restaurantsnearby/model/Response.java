@@ -1,7 +1,4 @@
-
 package com.rimon.restaurantsnearby.model;
-
-import com.squareup.moshi.Json;
 
 import java.util.List;
 
