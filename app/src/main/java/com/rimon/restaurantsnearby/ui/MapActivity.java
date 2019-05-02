@@ -1,6 +1,8 @@
 package com.rimon.restaurantsnearby.ui;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -17,18 +19,23 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.rimon.restaurantsnearby.R;
 import com.rimon.restaurantsnearby.RestaurantApplication;
 import com.rimon.restaurantsnearby.base.BaseActivity;
 import com.rimon.restaurantsnearby.base.navigation.FragmentScreenSwitcher;
 import com.rimon.restaurantsnearby.base.navigation.HasFragmentContainer;
 import com.rimon.restaurantsnearby.databinding.ActivityMapBinding;
+import com.rimon.restaurantsnearby.ui.adapter.SearchAdapter;
+import com.rimon.restaurantsnearby.ui.adapter.SuggestionModel;
 import com.rimon.restaurantsnearby.ui.fragment.MapFragmentScreen;
 import com.rimon.restaurantsnearby.ui.viewmodel.MapViewModel;
 import com.rimon.restaurantsnearby.ui.viewmodel.MapViewModelFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.WeakHashMap;
 
 import javax.inject.Inject;
 
@@ -44,7 +51,8 @@ public class MapActivity extends BaseActivity implements
     private MapViewModel mapViewModel;
     private GoogleMap mGoogleMap;
     private ActivityMapBinding mBinding;
-    private BottomSheetBehavior<ConstraintLayout> bottomSheetBehavior;
+    private MaterialSearchView mSearchView;
+    private WeakHashMap<String, Marker> mMarkerWeakHashMap = new WeakHashMap<>();
 
     @Override
     public int getLayoutResId() {
@@ -65,7 +73,8 @@ public class MapActivity extends BaseActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = (ActivityMapBinding) getViewDataBinding();
-        bottomSheetBehavior = BottomSheetBehavior.from(mBinding.bottomSheet);
+        mSearchView = mBinding.searchView;
+        BottomSheetBehavior<ConstraintLayout> bottomSheetBehavior = BottomSheetBehavior.from(mBinding.bottomSheet);
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
@@ -117,9 +126,26 @@ public class MapActivity extends BaseActivity implements
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        final MenuItem item = menu.findItem(R.id.action_search);
+        mSearchView.setMenuItem(item);
+        return true;
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         mFragmentScreenSwitcher.detach();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mSearchView.isSearchOpen()) {
+            mSearchView.closeSearch();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -156,19 +182,37 @@ public class MapActivity extends BaseActivity implements
 
     private void setupMarker(List<MarkerOptions> markerOptions) {
         mGoogleMap.clear();
+        mMarkerWeakHashMap.clear();
         if (!markerOptions.isEmpty()) {
-            final int size = markerOptions.size();
-            final Random mRandom = new Random();
-            final int mRandomValue = mRandom.nextInt(size);
-            for (int i = 0; i < size; i++) {
-                final MarkerOptions markerOption = markerOptions.get(i);
-                final Marker marker = mGoogleMap.addMarker(markerOption);
-                if (mRandomValue == i) {
-                    marker.showInfoWindow();
-                    mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 18));
-                    onMarkerClick(marker);
-                }
+            final List<SuggestionModel> mSuggestionModels = new ArrayList<>();
+            for (MarkerOptions mOptions : markerOptions) {
+                final Marker marker = mGoogleMap.addMarker(mOptions);
+                final String mId = marker.getId();
+                mMarkerWeakHashMap.put(mId, marker);
+                mSuggestionModels.add(new SuggestionModel(mId, marker.getTitle()));
             }
+            final Random generator = new Random();
+            final Object[] values = mMarkerWeakHashMap.values().toArray();
+            final Marker mRandomMarker = (Marker) values[generator.nextInt(values.length)];
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mRandomMarker.getPosition(), 18));
+            mRandomMarker.showInfoWindow();
+            onMarkerClick(mRandomMarker);
+            setSearchAdapter(mSuggestionModels);
         }
+    }
+
+    private void setSearchAdapter(final List<SuggestionModel> mSuggestionModels) {
+        final SearchAdapter mAdapter = new SearchAdapter(this, mSuggestionModels);
+        mSearchView.setAdapter(mAdapter);
+        mSearchView.setOnItemClickListener((parent, view, position, id) -> {
+            final SuggestionModel item = mAdapter.getItem(position);
+            final Marker marker = mMarkerWeakHashMap.get(item.getId());
+            if (marker != null) {
+                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 18));
+                onMarkerClick(marker);
+                marker.showInfoWindow();
+            }
+            mSearchView.closeSearch();
+        });
     }
 }

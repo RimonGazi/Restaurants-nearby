@@ -26,6 +26,9 @@ ext {
     MATERIAL = "com.google.android.material:material:$materialVersion"
     constraintLayoutVersion = '2.0.0-alpha3'
     CONSTRAINT_LAYOUT = "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
+    MATERIAL_SEARCHVIEW = "com.miguelcatalan:materialsearchview:1.4.0"
+
+    // Font
     CALLIGRAPHY = 'uk.co.chrisjenx:calligraphy:2.2.0'
 
     // map
@@ -121,6 +124,7 @@ ext {
             MATERIAL,
             CONSTRAINT_LAYOUT,
             MAP,
+            MATERIAL_SEARCHVIEW,
             CALLIGRAPHY,
             LIFECYCLE_EXTENSION,
             RX_ANDROID,
