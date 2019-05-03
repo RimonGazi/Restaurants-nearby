@@ -26,6 +26,7 @@ import com.rimon.restaurantsnearby.base.BaseActivity;
 import com.rimon.restaurantsnearby.base.navigation.FragmentScreenSwitcher;
 import com.rimon.restaurantsnearby.base.navigation.HasFragmentContainer;
 import com.rimon.restaurantsnearby.databinding.ActivityMapBinding;
+import com.rimon.restaurantsnearby.ui.about.AboutScreen;
 import com.rimon.restaurantsnearby.ui.adapter.SearchAdapter;
 import com.rimon.restaurantsnearby.ui.adapter.SuggestionModel;
 import com.rimon.restaurantsnearby.ui.fragment.MapFragmentScreen;
@@ -131,6 +132,14 @@ public class MapActivity extends BaseActivity implements
         final MenuItem item = menu.findItem(R.id.action_search);
         mSearchView.setMenuItem(item);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_about) {
+            activityScreenSwitcher().open(new AboutScreen(false));
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

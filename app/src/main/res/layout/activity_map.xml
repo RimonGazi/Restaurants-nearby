@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
             android:theme="@style/AppTheme.AppBarOverlay"
-            app:elevation="0dp">
+            app:liftOnScroll="true">
 
             <FrameLayout
                 android:id="@+id/toolbar_container"
